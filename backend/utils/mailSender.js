@@ -1,7 +1,7 @@
 const nodeMailer = require("nodemailer");
 require("dotenv").config();
 
-const sendEmail = async (receiver, subject, body) => {
+const sendEmail = async (receiver, subject, message) => {
   if (!process.env.SMTP_EMAIL || !process.env.SMTP_PASSWORD) {
     throw new Error(
       "SMTP_EMAIL or SMTP_PASSWORD is not defined in the environment variables."
@@ -21,12 +21,11 @@ const sendEmail = async (receiver, subject, body) => {
       from: `Study Notion <${process.env.SMTP_EMAIL}>`,
       to: `${receiver}`,
       subject: `${subject}`,
-      text: `${body}`,
+      text: `${message}`,
     });
     return response;
   } catch (error) {
     console.error("Error sending email:", error);
-    throw new Error("Failed to send email.");
   }
 };
 

@@ -22,12 +22,13 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    acoountType: {
+    accountType: {
       enum: ["Admin", "User", "Instructor"],
       type: String,
     },
     active: {
       type: Boolean,
+      default: true
     },
     approved: {
       type: Boolean,
