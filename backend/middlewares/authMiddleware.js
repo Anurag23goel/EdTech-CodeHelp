@@ -8,7 +8,7 @@ exports.authenticateUser = async (req, res, next) => {
     const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findById(decodedToken.id); //decodedToken.id => id is from payload created while logging in controller
     if (!user) {
-      return res.status(401).json({ message: "Invalid token" });
+      return res.status(401).json({ message: "Invalid user token" });
     } else {
       req.user = decodedToken;
     }

@@ -28,7 +28,7 @@ const userSchema = new mongoose.Schema(
     },
     active: {
       type: Boolean,
-      default: true
+      default: true,
     },
     approved: {
       type: Boolean,
@@ -46,6 +46,12 @@ const userSchema = new mongoose.Schema(
     courseProgress: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "CourseProgress",
+    },
+    resetPasswordToken: {
+      type: String,
+    },
+    resetPasswordTokenExpiry: {
+      type: Date,
     },
     image: {
       type: String,

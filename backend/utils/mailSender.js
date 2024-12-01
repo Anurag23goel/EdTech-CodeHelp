@@ -1,7 +1,7 @@
 const nodeMailer = require("nodemailer");
 require("dotenv").config();
 
-const sendEmail = async (receiver, subject, message) => {
+exports.sendEmail = async (receiver, subject, message) => {
   if (!process.env.SMTP_EMAIL || !process.env.SMTP_PASSWORD) {
     throw new Error(
       "SMTP_EMAIL or SMTP_PASSWORD is not defined in the environment variables."
@@ -29,4 +29,4 @@ const sendEmail = async (receiver, subject, message) => {
   }
 };
 
-module.exports = sendEmail;
+
