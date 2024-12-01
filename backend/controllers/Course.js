@@ -1,12 +1,12 @@
 const User = require("../models/User");
 const Course = require("../models/Courses");
-const Tags = require("../models/Tags");
+const Category = require("../models/Category");
 const { uploadImageToCloudinary } = require("../utils/imageUploader");
 
 // Creating a new Course
 exports.createCourse = async (req, res) => {
   // Fetch data from backend
-  const { name, description, whatWillYouLearn, price, tag } = req.body;
+  const { name, description, whatWillYouLearn, price, category } = req.body;
 
   // Fetch image File
   const imageFile = req.files.thumbnailImage;
@@ -18,7 +18,7 @@ exports.createCourse = async (req, res) => {
       !description ||
       !whatWillYouLearn ||
       !price ||
-      !tag ||
+      !category ||
       !imageFile
     ) {
       return res.status(400).json({
@@ -37,12 +37,12 @@ exports.createCourse = async (req, res) => {
       });
     }
 
-    // is Tag valid or not
-    const tagDetails = await Tags.findOne({ name: tag });
-    if (!tagDetails) {
+    // is category valid or not
+    const categoryDetails = await Category.findOne({ name: category });
+    if (!categoryDetails) {
       return res.status(400).json({
         success: false,
-        message: "Tag does not exist",
+        message: "category does not exist",
       });
     }
 
@@ -62,7 +62,7 @@ exports.createCourse = async (req, res) => {
       price,
       thumbnailImage: uploadedImage.url,
       instructor: req.user._id,
-      tag: tagDetails._id,
+      category: categoryDetails._id,
     });
 
     console.log("New Course Created Details:", newCourse);
@@ -72,9 +72,9 @@ exports.createCourse = async (req, res) => {
     userDetails.courses.push(newCourse._id);
     await userDetails.save();
 
-    // add corresponding course entry in tag model
-    tagDetails.courses.push(newCourse._id);
-    await tagDetails.save();
+    // add corresponding course entry in category model
+    categoryDetails.courses.push(newCourse._id);
+    await categoryDetails.save();
 
     // return response
     res.status(201).json({
@@ -99,7 +99,7 @@ exports.fetchAllCourses = async (req, res) => {
       { name: true, description: true, thumbnailImage: true, price: true }
     )
       .populate("instructor", "name")
-      .populate("tag", "name");
+      .populate("category", "name");
     res.status(200).json({
       success: true,
       message: "All Courses Fetched Successfully",
