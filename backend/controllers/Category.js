@@ -38,7 +38,7 @@ exports.fetchAllCategory = async (req, res) => {
 
 exports.categoryPageDetails = async (req, res) => {
   // get category id
-  const { categoryId } = req.body;
+  const categoryId = req.params.id;
 
   try {
     // finding category corresponding to category id
@@ -74,7 +74,7 @@ exports.categoryPageDetails = async (req, res) => {
       message: "Category details fetched successfully",
       categoryDetails,
       differentCategories,
-      topSellingCourses
+      topSellingCourses,
     });
   } catch (error) {
     res

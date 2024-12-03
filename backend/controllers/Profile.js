@@ -1,6 +1,6 @@
 const Profile = require("../models/Profile");
 const User = require("../models/User");
-const Course = require("../models/Courses");
+const Course = require("../models/Course");
 
 exports.updateProfile = async (req, res) => {
   const { gender, dateOfBirth, about, contactNumber } = req.body;

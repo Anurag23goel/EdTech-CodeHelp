@@ -1,4 +1,4 @@
-const Course = require("../models/Courses");
+const Course = require("../models/Course");
 const Section = require("../models/Section");
 const Subsection = require("../models/SubSection");
 
@@ -43,7 +43,8 @@ exports.createSection = async (req, res) => {
 exports.updateSection = async (req, res) => {
   try {
     // fetch data from frontend
-    const { sectionName, sectionId } = req.body;
+    const { sectionName } = req.body;
+    const sectionId = req.params.id;
 
     // validate data
     if (!sectionName || !sectionId) {
@@ -79,7 +80,7 @@ exports.updateSection = async (req, res) => {
 exports.deleteSection = async (req, res) => {
   try {
     // fetch data from frontend
-    const { sectionId } = req.body;
+    const sectionId = req.params.id;
 
     // validate data
     if (!sectionId) {

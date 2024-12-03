@@ -1,4 +1,4 @@
-const Course = require("../models/Courses");
+const Course = require("../models/Course");
 const Section = require("../models/Section");
 const SubSection = require("../models/SubSection");
 require("dotenv").config();

@@ -2,8 +2,8 @@ const express = require("express");
 const cors = require("cors");
 const expressfileupload = require("express-fileupload");
 const cookieParser = require("cookie-parser");
-const cookieParser = require("cookie-parser");
-const { dbConnection } = require("./connections/dbConnection");
+const { dbConnect } = require("./connections/dbConnection");
+const { cloudinaryConnect } = require("./connections/coudinaryConnection");
 const routes = require("./routes/index");
 require("dotenv").config();
 
@@ -12,9 +12,16 @@ const app = express();
 
 // Middlewares
 app.use(express.json());
-app.use(cors());
-app.use(expressfileupload());
+app.use(
+  expressfileupload({
+    useTempFiles: true,
+    tempFileDir: "/tmp/",
+  })
+);
 app.use(cookieParser());
+app.use(cors());
+
+// Routing
 app.use("/api/v1", routes);
 
 // Default route
@@ -25,5 +32,6 @@ app.get("/", (req, res) => {
 // Server Start
 app.listen(process.env.PORT, () => {
   console.log(`Server is running on port ${process.env.PORT}`);
-  dbConnection();
+  dbConnect();
+  cloudinaryConnect();
 });

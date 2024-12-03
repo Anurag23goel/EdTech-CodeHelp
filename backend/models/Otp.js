@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const sendEmail = require("../utils/mailSender");
-const uniqueValidator = require("mongoose-unique-validator");
 const otpTemplate = require("../mailTemplates/emailVerificationTemplate")
 
 const otpSchema = new mongoose.Schema({
@@ -44,8 +43,5 @@ otpSchema.pre("save", async function (next) {
     next(error); // Stop the save operation if email fails
   }
 });
-
-// Apply unique validation plugin
-otpSchema.plugin(uniqueValidator, { message: "Email must be unique." });
 
 module.exports = mongoose.model("Otp", otpSchema);

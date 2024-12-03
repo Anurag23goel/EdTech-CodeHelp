@@ -1,5 +1,5 @@
 const User = require("../models/User");
-const Course = require("../models/Courses");
+const Course = require("../models/Course");
 const Category = require("../models/Category");
 const { uploadImageToCloudinary } = require("../utils/imageUploader");
 require("dotenv").config();
@@ -117,7 +117,7 @@ exports.fetchAllCourses = async (req, res) => {
 
 // Get Single Course Details
 exports.getCourseDetails = async (req, res) => {
-  const { courseId } = req.body;
+  const courseId = req.params.id;
 
   try {
     // fetch course details populating all the required fields
