@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const sendEmail = require("../utils/mailSender");
 const uniqueValidator = require("mongoose-unique-validator");
+const otpTemplate = require("../mailTemplates/emailVerificationTemplate")
 
 const otpSchema = new mongoose.Schema({
   email: {
@@ -14,7 +15,6 @@ const otpSchema = new mongoose.Schema({
   },
   createdAt: {
     type: Date,
-    required: true,
     default: Date.now(),
     expires: 5 * 60, // 5 minutes
   },
@@ -26,7 +26,7 @@ async function sendVerificationEmail(receiver, otp) {
     const mailResponse = await sendEmail({
       email: receiver,
       subject: "Verification Email",
-      message: `Your OTP is: ${otp}`,
+      message: otpTemplate(otp),
     });
     console.log("OTP sent successfully:", mailResponse);
   } catch (error) {

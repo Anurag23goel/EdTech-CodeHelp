@@ -2,6 +2,7 @@ const User = require("../models/User");
 const Course = require("../models/Courses");
 const Category = require("../models/Category");
 const { uploadImageToCloudinary } = require("../utils/imageUploader");
+require("dotenv").config();
 
 // Creating a new Course
 exports.createCourse = async (req, res) => {
@@ -48,8 +49,8 @@ exports.createCourse = async (req, res) => {
 
     // upload image to cloudinary
     const uploadedImage = await uploadImageToCloudinary(
-      process.env.FOLDER_NAME,
       imageFile,
+      process.env.FOLDER_NAME,
       400,
       400
     );
@@ -110,6 +111,40 @@ exports.fetchAllCourses = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Error while fetching all courses",
+    });
+  }
+};
+
+// Get Single Course Details
+exports.getCourseDetails = async (req, res) => {
+  const { courseId } = req.body;
+
+  try {
+    // fetch course details populating all the required fields
+    const courseDetails = await Course.findById(courseId)
+      .populate({ path: "instructor", populate: { path: "profileDetails" } })
+      .populate("category", "name")
+      .populate("usersEnrolled", "name")
+      .populate({ path: "courseContent", populate: { path: "subSection" } })
+      .exec();
+
+    if (!courseDetails) {
+      return res.status(404).json({
+        success: false,
+        message: "Course not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Course details fetched successfully",
+      courseDetails,
+    });
+  } catch (error) {
+    console.log("Error while fetching course details", error);
+    res.status(200).json({
+      success: false,
+      message: "Error while fetching course details",
     });
   }
 };

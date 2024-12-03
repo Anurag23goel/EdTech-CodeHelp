@@ -216,7 +216,7 @@ exports.changePassword = async (req, res) => {
 
       // sending confirmation email
       const mailResponse = await sendEmail({
-        email: req.user.email,
+        to: req.user.email,
         subject: "Password Changed",
         message: "Password changed successfully",
       });

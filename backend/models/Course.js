@@ -19,7 +19,6 @@ const courseSchema = new mongoose.Schema({
   courseContent: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      required: true,
       ref: "Section",
     },
   ],
@@ -44,11 +43,9 @@ const courseSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Category",
   },
-  tags: [
-    {
-      type: String,
-    },
-  ],
+  tags: {
+    type: [String],
+  },
   usersEnrolled: [
     {
       type: mongoose.Schema.Types.ObjectId,
