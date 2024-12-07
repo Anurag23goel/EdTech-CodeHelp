@@ -1,7 +1,7 @@
 const User = require("../models/User");
 const { sendEmail } = require("../utils/mailSender");
 
-// Sending Reset Password FrontEnd Link Function
+// Sending Reset Password FrontEnd Link and reset password token to user via email
 exports.sendingResetPasswordLink = async (req, res) => {
   // fetch email from body
   const { email } = req.body;
@@ -33,11 +33,11 @@ exports.sendingResetPasswordLink = async (req, res) => {
     const url = `http://localhost:3000/reset-password/${token}`;
 
     // send the url to user in mail and return success message
-    const maiLResponse = sendEmail(
-      email,
-      "Reset Password Link",
-      `Click on this link to reset password: ${url}`
-    );
+    const maiLResponse = sendEmail({
+      to: email,
+      subject: "Reset Password Link",
+      message: `Click on this link to reset password: ${url}`,
+    });
     res.status(200).json({
       success: true,
       message: "Email sent successfully",
@@ -51,10 +51,10 @@ exports.sendingResetPasswordLink = async (req, res) => {
   }
 };
 
-// Updating Password in DataBase
+// Actually Updating Password in DataBase after token gets verified
 exports.updatePassword = async (req, res) => {
   // get details from body
-  const { token, newPassword } = req.body;
+  const { token, password } = req.body;
 
   try {
     // chech if user exists or not and if user exists the token is expired or not
@@ -76,7 +76,7 @@ exports.updatePassword = async (req, res) => {
     // updating the password in database
     const updatedUser = await User.findOneAndUpdate(
       { resetPasswordToken: token },
-      { password: newPassword },
+      { password: password },
       { new: true }
     );
 

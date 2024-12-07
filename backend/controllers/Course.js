@@ -29,7 +29,7 @@ exports.createCourse = async (req, res) => {
     }
 
     // isIntructor valid or not
-    console.log("User fetched from auth middleware:", req.user);
+    // console.log("User fetched from auth middleware:", req.user);
 
     if (req.user.accountType !== "Instructor") {
       return res.status(401).json({
@@ -39,7 +39,7 @@ exports.createCourse = async (req, res) => {
     }
 
     // is category valid or not
-    const categoryDetails = await Category.findOne({ name: category });
+    const categoryDetails = await Category.findOne({ _id: category });
     if (!categoryDetails) {
       return res.status(400).json({
         success: false,
@@ -62,14 +62,14 @@ exports.createCourse = async (req, res) => {
       whatWillYouLearn,
       price,
       thumbnailImage: uploadedImage.url,
-      instructor: req.user._id,
+      instructor: req.user.id,
       category: categoryDetails._id,
     });
 
-    console.log("New Course Created Details:", newCourse);
+    // console.log("New Course Created Details:", newCourse);
 
     // add course entry in user model corresponding to that user
-    const userDetails = await User.findById(req.user._id);
+    const userDetails = await User.findById(req.user.id);
     userDetails.courses.push(newCourse._id);
     await userDetails.save();
 
@@ -117,15 +117,15 @@ exports.fetchAllCourses = async (req, res) => {
 
 // Get Single Course Details
 exports.getCourseDetails = async (req, res) => {
-  const courseId = req.params.id;
+  const { courseId } = req.body;
 
   try {
     // fetch course details populating all the required fields
     const courseDetails = await Course.findById(courseId)
-      .populate({ path: "instructor", populate: { path: "profileDetails" } })
-      .populate("category", "name")
+      .populate({ path: "instructor", select: "-password -_id -__v", populate: { path: "profileDetails", select: "-_id -__v" } })
+      .populate("category", "name -_id")
       .populate("usersEnrolled", "name")
-      .populate({ path: "courseContent", populate: { path: "subSection" } })
+      .populate({ path: "courseContent", select: "-_id", populate: { path: "subSection", select: "-_id" } })
       .exec();
 
     if (!courseDetails) {

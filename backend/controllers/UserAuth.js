@@ -1,8 +1,9 @@
 const User = require("../models/User");
 const Otp = require("../models/Otp");
-const generateOtp = require("otp-generator");
+const otpGenerator = require("otp-generator");
 const jwt = require("jsonwebtoken");
 const sendEmail = require("../utils/mailSender");
+const Profile = require("../models/Profile");
 require("dotenv").config();
 
 // SignUp Function
@@ -24,7 +25,6 @@ exports.signUp = async (req, res) => {
     const recentOtp = await Otp.findOne({ email })
       .sort({ createdAt: -1 })
       .limit(1);
-    console.log(recentOtp.otp);
 
     if (!recentOtp) {
       return res.status(401).json({
@@ -77,7 +77,7 @@ exports.signUp = async (req, res) => {
 
 // Login Function
 exports.login = async (req, res) => {
-  const { email, passsword } = req.body;
+  const { email, password } = req.body;
 
   try {
     // cheking if user exists
@@ -88,7 +88,7 @@ exports.login = async (req, res) => {
         success: false,
         message: "User not found",
       });
-    } else if (user.password !== passsword) {
+    } else if (user.password !== password) {
       return res.status(401).json({
         success: false,
         message: "Invalid password",
@@ -117,6 +117,7 @@ exports.login = async (req, res) => {
       res.cookie("token", token, options).status(200).json({
         success: true,
         message: "User logged in successfully",
+        token,
         user,
       });
     }
@@ -146,23 +147,21 @@ exports.sendOtp = async (req, res) => {
     }
 
     // Generating OTP
-    const generatedOtp = generateOtp(6, {
+    const generatedOtp = otpGenerator.generate(6, {
       specialChars: false,
       lowercase: false,
       uppercase: false,
     });
-    console.log("OTP generated:", generatedOtp);
 
     //Checking OTP unique and generating new otp if bot unique
     let result = await Otp.findOne({ otp: generatedOtp });
 
     while (result) {
-      generatedOtp = generateOtp(6, {
+      generatedOtp = otpGenerator.generate(6, {
         specialChars: false,
         lowercase: false,
         uppercase: false,
       });
-      console.log("OTP generated:", generatedOtp);
       result = await Otp.findOne({ otp: generatedOtp });
     }
 
@@ -171,11 +170,11 @@ exports.sendOtp = async (req, res) => {
       email,
       otp: generatedOtp,
     });
-    console.log("OTP saved in database:", otpObject);
 
     res.status(200).json({
       success: true,
       message: "OTP sent successfully",
+      otp: generatedOtp,
     });
   } catch (error) {
     console.log("Error while sending OTP:", error);

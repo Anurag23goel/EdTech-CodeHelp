@@ -1,4 +1,4 @@
-const express = require("express");
+ const express = require("express");
 const router = express.Router();
 
 // Import controllers
@@ -23,40 +23,40 @@ router.post("/sendotp", sendOtp);
 router.post("/change-password", authenticateUser, changePassword); // Authenticate before password change
 
 // Category routes (only admins should create categories)
-router.post("/categories", authenticateUser, isAdmin, createCategory);
-router.get("/categories", fetchAllCategory);
-router.get("/categories/:id", categoryPageDetails);
+router.post("/createCategory", authenticateUser, isAdmin, createCategory);
+router.get("/showAllCategories", fetchAllCategory);
+router.post("/getCategoryPageDetails", categoryPageDetails);
 
 // Course routes
-router.post("/courses", authenticateUser, isInstructor, createCourse); // Only instructors can create courses
-router.get("/courses", fetchAllCourses); // Public
-router.get("/courses/:id", getCourseDetails); // Public
+router.post("/createCourse", authenticateUser, isInstructor, createCourse); // Only instructors can create courses
+router.get("/getAllCourses", fetchAllCourses); // Public
+router.get("/getCourseDetails", getCourseDetails); // Public
 
 // Payment routes (authentication needed for payments)
-router.post("/payments/capture", authenticateUser, capturePayment);
+router.post("/capturePayment", authenticateUser, capturePayment);
 router.post("/payments/verify", authenticateUser, verifySignature);
 
 // Profile routes
-router.put("/profile", authenticateUser, updateProfile);
-router.delete("/profile", authenticateUser, deleteAccount);
-router.get("/profile", authenticateUser, getProfileDetails);
+router.put("/updateProfile", authenticateUser, updateProfile);
+router.delete("/deleteProfile", authenticateUser, deleteAccount);
+router.get("/getUserDetails", authenticateUser, getProfileDetails);
 
 // Rating and review routes
-router.post("/reviews", authenticateUser, isStudent, createReview); // Only students can review
-router.get("/reviews/average", getAverageRating); // Public
-router.get("/reviews", getAllRatings); // Public
+router.post("/createRating", authenticateUser, isStudent, createReview); // Only students can review
+router.get("/getAverageRating", getAverageRating); // Public
+router.get("/getReviews", getAllRatings); // Public
 
 // Reset password routes (no auth required)
-router.post("/password/resetlink", sendingResetPasswordLink);
-router.post("/password/update", updatePassword);
+router.post("/reset-password-token", sendingResetPasswordLink);
+router.post("/reset-password", updatePassword);
 
 // Section routes (only instructors can manage sections)
-router.post("/sections", authenticateUser, isInstructor, createSection);
-router.put("/sections/:id", authenticateUser, isInstructor, updateSection);
-router.delete("/sections/:id", authenticateUser, isInstructor, deleteSection);
+router.post("/addSection", authenticateUser, isInstructor, createSection);
+router.post("/updateSection", authenticateUser, isInstructor, updateSection);
+router.post("/deleteSection", authenticateUser, isInstructor, deleteSection);
 
 // Subsection routes (only instructors can manage subsections)
-router.post("/subsections", authenticateUser, isInstructor, createSubsection);
+router.post("/addSubSection", authenticateUser, isInstructor, createSubsection);
 
 // Contact us route (public)
 router.post("/contact-us", contactUs);

@@ -4,17 +4,29 @@ const Course = require("../models/Course");
 exports.createCategory = async (req, res) => {
   try {
     const { name, description } = req.body;
-    const tag = await Category.create({
+
+    const existingCategory = await Category.findOne({ name: name });
+    if (existingCategory) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Category already exists" });
+    }
+
+    const category = await Category.create({
       name,
       description,
     });
     res
       .status(201)
-      .json({ success: true, message: "Tag created successfully", tag });
+      .json({
+        success: true,
+        message: "Category created successfully",
+        category,
+      });
   } catch (error) {
     res
       .status(500)
-      .json({ success: false, message: "Error creating tag", error });
+      .json({ success: false, message: "Error creating Category", error });
   }
 };
 

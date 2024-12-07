@@ -21,7 +21,7 @@ exports.sendEmail = async ({ to, subject, message }) => {
       from: `Study Notion <${process.env.SMTP_EMAIL}>`,
       to: `${to}`,
       subject: `${subject}`,
-      text: `${message}`,
+      html: `${message}`,
     });
     return response;
   } catch (error) {
